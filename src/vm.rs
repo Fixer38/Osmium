@@ -55,6 +55,7 @@ impl VM {
     }
 
     fn next_16_bits(&mut self) -> u16 {
+        // Having to shift first 8 bits into the u16 to fill up the last 8 bits with the remainder.
         let result = ((self.program[self.pc] as u16) << 8) | self.program[self.pc + 1] as u16;
         println!("{:?}", result);
         self.pc += 2;
@@ -93,8 +94,8 @@ mod tests {
     #[test]
     fn test_load_opcode() {
         let mut test_vm = VM::new();
-        test_vm.program = vec![1, 0, 1, 244];
+        test_vm.program = vec![1, 0, 1, 244]; // 1 in first for the LOAD. 1 and 244 = 500 (LE)
         test_vm.run();
-        assert_eq!(test_vm.registers[0], 500);
+        assert_eq!(test_vm.registers[0], 500); // Expected result to be 500
     }
 }
