@@ -17,29 +17,29 @@ impl VM {
     }
 
     pub fn run(&mut self) {
-        loop {
-            // break the program loop if pc gets higher than the amount of bytes allowed
-            if self.pc >= self.program.len() {
-                break
-            }
-
-            match self.decode_opcode() {
-                Opcode::HLT => {
-                    println!("Halt encountered");
-                    return;
-                },
-                Opcode::LOAD => {
-                    let register = self.next_8_bits() as usize; // usize cast for array index
-                    let number = self.next_16_bits();
-                    self.registers[register] = number as i32;
-                    continue;
-                },
-                _ => {
-                    println!("Opcode not recognized");
-                    return;
-                }
-            }
+        let mut is_done = false;
+        while !is_done {
+            is_done = self.execute_instruction();
         }
+    }
+
+    fn execute_instruction(&mut self) -> bool {
+        if self.pc >= self.program.len() {
+            return false;
+        }
+        match self.decode_opcode() {
+            Opcode::HLT => {
+                println!("Halt encountered");
+                return false
+            },
+            Opcode::LOAD => {
+                let register = self.next_8_bits() as usize; // usize cast for array index
+                let number = self.next_16_bits();
+                self.registers[register] = number as i32;
+            },
+            Opcode::IGL => println!("unknown instruction encountered")
+        }
+        true
     }
 
     fn decode_opcode(&mut self) -> Opcode {
