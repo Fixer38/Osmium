@@ -10,7 +10,6 @@ impl From<u8> for Opcode {
         match v {
             0 => Opcode::HLT,
             1 => Opcode::LOAD,
-            _ => Opcode::IGL,
         }
     }
 }
