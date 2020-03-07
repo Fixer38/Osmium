@@ -33,15 +33,20 @@ impl VM {
                 return false
             },
             Opcode::LOAD => {
+                // LOAD format: $0, $1
+                // $0 register storing the loaded value
+                // $1 value to load into register on 16 bits
                 let register = self.next_8_bits() as usize; // usize cast for array index
                 let number = self.next_16_bits();
                 self.registers[register] = number as i32;
             },
             Opcode::ADD => {
-                let register = self.next_8_bits() as usize;
-                let arg1 = self.next_8_bits() as i32;
-                let arg2 = self.next_8_bits() as i32;
-                self.registers[register] = arg1 + arg2;
+                // ADD format: $1, $2, $3
+                // $1 and $2 operands to add from register
+                // $3 addition destination register
+                let operand1 = self.registers[self.next_8_bits() as usize];
+                let operand2 = self.registers[self.next_8_bits() as usize];
+                self.registers[self.next_8_bits() as usize] = operand1 + operand2;
             }
             Opcode::IGL => println!("unknown instruction encountered")
         }
