@@ -18,7 +18,7 @@ impl VM {
 
     pub fn run(&mut self) {
         let mut is_done = false;
-        while !is_done {
+        while is_done == false {
             is_done = self.execute_instruction();
         }
     }
@@ -37,6 +37,12 @@ impl VM {
                 let number = self.next_16_bits();
                 self.registers[register] = number as i32;
             },
+            Opcode::ADD => {
+                let register = self.next_8_bits() as usize;
+                let arg1 = self.next_8_bits() as i32;
+                let arg2 = self.next_8_bits() as i32;
+                self.registers[register] = arg1 + arg2;
+            }
             Opcode::IGL => println!("unknown instruction encountered")
         }
         true
@@ -91,11 +97,20 @@ mod tests {
         test_vm.run();
         assert_eq!(test_vm.pc, 1);
     }
+
     #[test]
-    fn test_load_opcode() {
+    fn test_opcode_load() {
         let mut test_vm = VM::new();
         test_vm.program = vec![1, 0, 1, 244]; // 1 in first for the LOAD. 1 and 244 = 500 (LE)
         test_vm.run();
         assert_eq!(test_vm.registers[0], 500); // Expected result to be 500
+    }
+
+    #[test]
+    fn test_opcode_add() {
+        let mut test_vm = VM::new();
+        test_vm.program = vec![2, 0, 2, 255];
+        test_vm.run();
+        assert_eq!(test_vm.registers[0], 257);
     }
 }
