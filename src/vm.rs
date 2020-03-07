@@ -47,6 +47,14 @@ impl VM {
                 let operand1 = self.registers[self.next_8_bits() as usize];
                 let operand2 = self.registers[self.next_8_bits() as usize];
                 self.registers[self.next_8_bits() as usize] = operand1 + operand2;
+            },
+            Opcode::SUB => {
+                // SUB format: $1, $2, $3
+                // $1 and $2 operands to add from register
+                // $3 substraction destination register
+                let operand1 = self.registers[self.next_8_bits() as usize];
+                let operand2 = self.registers[self.next_8_bits() as usize];
+                self.registers[self.next_8_bits() as usize] = operand1 - operand2;
             }
             Opcode::IGL => println!("unknown instruction encountered")
         }
