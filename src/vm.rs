@@ -5,6 +5,7 @@ pub struct VM {
     pc: usize,
     program: Vec<u8>,
     remainder: u32,
+    psw: bool,
 }
 
 
@@ -15,6 +16,7 @@ impl VM {
             pc: 0,
             program: vec![],
             remainder: 0,
+            psw: false,
         }
     }
 
@@ -88,6 +90,16 @@ impl VM {
                 let value = self.registers[self.next_8_bits() as usize];
                 self.pc += value as usize;
             }
+            Opcode::EQ => {
+                // EQ format: EQ $1, $2
+                // $1 and $2 values from the register to compare
+                let register1 = self.registers[self.next_8_bits() as usize];
+                let register2 = self.registers[self.next_8_bits() as usize];
+                self.psw = register1 == register2;
+                // Read next 8 bits since they're not used in this instruction
+                self.next_8_bits();
+            }
+
             Opcode::IGL => println!("unknown instruction encountered")
         }
         true
