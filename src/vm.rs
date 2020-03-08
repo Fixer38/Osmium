@@ -150,15 +150,8 @@ mod tests {
     #[test]
     fn test_opcode_add() {
         let mut test_vm = VM::new();
-        // Store 255 in register 0
-        test_vm.program = vec![1, 0, 0, 255];
-        test_vm.execute_instruction();
-        test_vm.pc = 0;
-        // Store 2 in register 1
-        test_vm.program = vec![1, 1, 0, 2];
-        test_vm.execute_instruction();
-        test_vm.pc = 0;
-        // Add the 2 and check results
+        test_vm.registers[0] = 255;
+        test_vm.registers[1] = 2;
         test_vm.program = vec![2, 0, 1, 0];
         test_vm.execute_instruction();
         assert_eq!(test_vm.registers[0], 257);
@@ -167,17 +160,11 @@ mod tests {
     #[test]
     fn test_opcode_div() {
         let mut test_vm = VM::new();
-        // Load 5 in register 0
-        test_vm.program = vec![1, 0, 0, 5];
-        test_vm.pc = 0;
-        test_vm.execute_instruction();
-        // Load 2 in register 1
-        test_vm.program = vec![1, 1, 0, 2];
-        test_vm.pc = 0;
-        test_vm.execute_instruction();
         // Check results of quotient in register 0 from the division
+        // Check remainder
+        test_vm.registers[0] = 5;
+        test_vm.registers[1] = 2;
         test_vm.program = vec![5, 0, 1, 0];
-        test_vm.pc = 0;
         test_vm.execute_instruction();
         assert_eq!(test_vm.registers[0], 2);
         assert_eq!(test_vm.remainder, 1);
