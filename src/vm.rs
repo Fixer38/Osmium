@@ -100,6 +100,8 @@ impl VM {
                 self.next_8_bits();
             }
             Opcode::JEQ => {
+                // JEQ format: JEQ $1
+                // $1 target to jump to
                 let target = self.registers[self.next_8_bits() as usize];
                 if self.psw {
                     self.pc = target as usize;
@@ -210,5 +212,16 @@ mod tests {
         test_vm.program = vec![7, 0, 0, 0];
         test_vm.execute_instruction();
         assert_eq!(test_vm.pc, 4);
+    }
+    
+    #[test]
+    fn test_opcode_jeq() {
+        // Check if the pc is equal to the correct pc
+        let mut test_vm = VM::new();
+        test_vm.registers[0] = 1;
+        test_vm.psw = true;
+        test_vm.program = vec![9, 0, 0, 0];
+        test_vm.execute_instruction();
+        assert_eq!(test_vm.pc, 1);
     }
 }
