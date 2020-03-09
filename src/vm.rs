@@ -99,6 +99,12 @@ impl VM {
                 // Read next 8 bits since they're not used in this instruction
                 self.next_8_bits();
             }
+            Opcode::JEQ => {
+                let target = self.registers[self.next_8_bits() as usize];
+                if self.psw {
+                    self.pc = target as usize;
+                }
+            }
 
             Opcode::IGL => println!("unknown instruction encountered")
         }
