@@ -93,8 +93,8 @@ impl VM {
             Opcode::EQ => {
                 // EQ format: EQ $1, $2
                 // $1 and $2 values from the register to compare
-                let register1 = self.registers[self.next_8_bits() as usize];
-                let register2 = self.registers[self.next_8_bits() as usize];
+                let register1 = self.registers[self.next_8_bits() as usize] as i32;
+                let register2 = self.registers[self.next_8_bits() as usize] as i32;
                 self.psw = register1 == register2;
                 // Read next 8 bits since they're not used in this instruction
                 self.next_8_bits();
@@ -212,6 +212,21 @@ mod tests {
         test_vm.program = vec![7, 0, 0, 0];
         test_vm.execute_instruction();
         assert_eq!(test_vm.pc, 4);
+    }
+
+    #[test]
+    fn test_opcode_eq() {
+        // Check if psw is true after condition check for same value
+        let mut test_vm = VM::new();
+        test_vm.registers[0] = 1;
+        test_vm.registers[1] = 1;
+        test_vm.program = vec![8, 0, 1, 0, 8, 0, 1, 0];
+        test_vm.execute_instruction();
+        assert_eq!(test_vm.psw, true);
+        // Check if psw is false after condition check for different value
+        test_vm.registers[1] = 2;
+        test_vm.execute_instruction();
+        assert_eq!(test_vm.psw, false);
     }
     
     #[test]
