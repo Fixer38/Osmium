@@ -108,24 +108,34 @@ impl VM {
                 self.next_8_bits();
             }
             Opcode::GT => { 
+                // GT format: GT $1, $2
+                // $1 and $2 values from the register to compare. PSW = 1 if left value higher
                 let register1 = self.registers[self.next_8_bits() as usize] as i32;
                 let register2 = self.registers[self.next_8_bits() as usize] as i32;
                 self.psw = register1 > register2;
                 self.next_8_bits();
             }
             Opcode::LT => {
+                // LT format: LT $1, $2
+                // $1 and $2 values from the register to compare. PSW = 1 if left value lower
                 let register1 = self.registers[self.next_8_bits() as usize] as i32;
                 let register2 = self.registers[self.next_8_bits() as usize] as i32;
                 self.psw = register1 < register2;
                 self.next_8_bits();
             }
             Opcode::GTE => {
+                // GTE format: GTE $1, $2
+                // $1 and $2 values from the register to compare.
+                // PSW = 1 if left value higher or equal compared to right
                 let register1 = self.registers[self.next_8_bits() as usize] as i32;
                 let register2 = self.registers[self.next_8_bits() as usize] as i32;
                 self.psw = register1 >= register2;
                 self.next_8_bits();
             }
             Opcode::LTE => {
+                // LTE format: LTE $1, $2
+                // $1 and $2 values from the register to compare.
+                // PSW = 1 if right value lower or equal compared to right
                 let register1 = self.registers[self.next_8_bits() as usize] as i32;
                 let register2 = self.registers[self.next_8_bits() as usize] as i32;
                 self.psw = register1 <= register2;
