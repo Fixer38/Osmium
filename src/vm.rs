@@ -107,6 +107,30 @@ impl VM {
                 self.psw = !(register1 == register2);
                 self.next_8_bits();
             }
+            Opcode::GT => { 
+                let register1 = self.registers[self.next_8_bits() as usize] as i32;
+                let register2 = self.registers[self.next_8_bits() as usize] as i32;
+                self.psw = register1 > register2;
+                self.next_8_bits();
+            }
+            Opcode::LT => {
+                let register1 = self.registers[self.next_8_bits() as usize] as i32;
+                let register2 = self.registers[self.next_8_bits() as usize] as i32;
+                self.psw = register1 < register2;
+                self.next_8_bits();
+            }
+            Opcode::GTE => {
+                let register1 = self.registers[self.next_8_bits() as usize] as i32;
+                let register2 = self.registers[self.next_8_bits() as usize] as i32;
+                self.psw = register1 >= register2;
+                self.next_8_bits();
+            }
+            Opcode::LTE => {
+                let register1 = self.registers[self.next_8_bits() as usize] as i32;
+                let register2 = self.registers[self.next_8_bits() as usize] as i32;
+                self.psw = register1 <= register2;
+                self.next_8_bits();
+            }
             Opcode::JEQ => {
                 // JEQ format: JEQ $1
                 // $1 target to jump to
@@ -115,7 +139,6 @@ impl VM {
                     self.pc = target as usize;
                 }
             }
-
             Opcode::IGL => println!("unknown instruction encountered")
         }
         true
@@ -258,7 +281,7 @@ mod tests {
         let mut test_vm = VM::new();
         test_vm.registers[0] = 1;
         test_vm.psw = true;
-        test_vm.program = vec![10, 0, 0, 0];
+        test_vm.program = vec![14, 0, 0, 0];
         test_vm.execute_instruction();
         assert_eq!(test_vm.pc, 1);
     }
