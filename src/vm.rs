@@ -92,11 +92,19 @@ impl VM {
             }
             Opcode::EQ => {
                 // EQ format: EQ $1, $2
-                // $1 and $2 values from the register to compare
+                // $1 and $2 values from the register to compare. PSW = 1 if equal
                 let register1 = self.registers[self.next_8_bits() as usize] as i32;
                 let register2 = self.registers[self.next_8_bits() as usize] as i32;
                 self.psw = register1 == register2;
                 // Read next 8 bits since they're not used in this instruction
+                self.next_8_bits();
+            }
+            Opcode::NEQ => {
+                // NEQ format: NEQ $1, $2
+                // $1 and $2 values from the register to compare. PSW = 1 if not equal
+                let register1 = self.registers[self.next_8_bits() as usize] as i32;
+                let register2 = self.registers[self.next_8_bits() as usize] as i32;
+                self.psw = !(register1 == register2);
                 self.next_8_bits();
             }
             Opcode::JEQ => {
@@ -228,6 +236,21 @@ mod tests {
         test_vm.execute_instruction();
         assert_eq!(test_vm.psw, false);
     }
+
+    #[test]
+    fn test_opcode_neq() {
+        // Check if psw is true after condition check for same value
+        let mut test_vm = VM::new();
+        test_vm.registers[0] = 1;
+        test_vm.registers[1] = 1;
+        test_vm.program = vec![9, 0, 1, 0, 9, 0, 1, 0];
+        test_vm.execute_instruction();
+        assert_eq!(test_vm.psw, false);
+        // Check if psw is false after condition check for different value
+        test_vm.registers[1] = 2;
+        test_vm.execute_instruction();
+        assert_eq!(test_vm.psw, true);
+    }
     
     #[test]
     fn test_opcode_jeq() {
@@ -235,7 +258,7 @@ mod tests {
         let mut test_vm = VM::new();
         test_vm.registers[0] = 1;
         test_vm.psw = true;
-        test_vm.program = vec![9, 0, 0, 0];
+        test_vm.program = vec![10, 0, 0, 0];
         test_vm.execute_instruction();
         assert_eq!(test_vm.pc, 1);
     }
